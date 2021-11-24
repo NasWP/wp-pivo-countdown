@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400,600;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+        }
+        #schedule {
+            position: absolute;
+            bottom: -3%;
+            left: 3.2%;
+        }
+        h2 {
+            color: #ffffffb3;
+            font-size: 3.5rem;
+        }
+        .active {
+            color: #fff;
+        }
+        #time {
+            position: absolute;
+            top: 28%;
+            right: 5%;
+            font-size: 14rem;
+            min-width: 220px;
+            font-weight:600;
+            font-family: monospace;
+        }
+        span {
+            font-size: 70%;
+            font-weight: 400;
+            display: block;
+        }
+    </style>
+    <meta charset="utf-8">
+    <title>WP Pivo</title>
+</head>
+<body>
+    <div id="schedule"></div>
+    <div id="time"></div>
+<script>
+/**
+ * Configure it here
+ */
+
+var eventDate = "November 24, 2021";
+var schedule = [
+    {
+        id: "schedule-1",
+        author: "Karolína Vyskočilová",
+        title: "Opening & WP News",
+        time: "18:30"
+    },
+    {
+        id: "schedule-2",
+        author: "Adam Laita",
+        title: "Cookie Consent na WP pomocí pluginu",
+        time: "18:50"
+    },
+    {
+        id: "schedule-3",
+        author: "Jiří Hradský (Sedláková Legal)",
+        title: "Vítej cookie banere, aneb právní úprava cookies ",
+        time: "19:30"
+    },
+    {
+        id: "schedule-4",
+        author: null,
+        title: "Afterparty",
+        time: "20:10"
+    },
+];
+
+/**
+ * Don't touch from here
+ */
+
+var scheduleWrapper = document.getElementById('schedule');
+var countDownDate = [];
+schedule.forEach((item, idx) => {
+    scheduleWrapper.innerHTML += "<h2 id='"+item.id+"'"+ (idx === 0 ? " class='active'" : "")+">" + (item.author ? "<span>"+item.author+"</span>" : "" ) + item.title+" ("+item.time+")</h2>"
+    countDownDate.push(
+        {
+            id: item.id,
+            date: new Date(eventDate +" " + item.time + ":00").getTime()
+        }
+    )
+});
+
+function pad(n, width, z) {
+  z = z || '0';
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+  var noCounterInterval = -3 * 60 * 1000;
+
+  if (countDownDate.length === 0) {
+      document.getElementById("time").innerHTML = "";
+      clearInterval(x);
+      return;
+  }
+
+  // Shift the active element.
+  var current = document.getElementById(countDownDate[0].id);
+  if (current.classList.contains("active") === false) {
+      current.classList.add("active");
+  }
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate[0].date - now;
+
+  // If the count down is over, hide the counter
+  if (distance < noCounterInterval) {
+    current.classList.remove("active");
+    countDownDate.shift();
+  } else if (distance < 0) {
+      document.getElementById("time").innerHTML = "";
+  } else {
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = pad(Math.floor((distance % (1000 * 60)) / 1000),2);
+
+      // Output the result in an element with id="time"
+      document.getElementById("time").innerHTML = minutes + ":" + seconds;
+
+  }
+
+
+}, 1000);
+</script>
+</body>
+</html>
